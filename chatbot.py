@@ -3,7 +3,7 @@ import streamlit as st
 from google import genai
 from dotenv import load_dotenv
 
-st.set_page_config(page_title="Gemini Chatbot", page_icon="🤖")
+st.set_page_config(page_title="Raiyan AI Chatbot", page_icon="🤖")
 
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY")
@@ -38,4 +38,7 @@ if prompt := st.chat_input("Type your message here..."):
         st.session_state.messages.append({"role": "assistant", "content": response.text})
         
     except Exception as e:
-        st.error(f"Error communicating with Gemini: {e}")
+        if "503" in str(e) or "UNAVAILABLE" in str(e):
+            st.warning("Google's servers are temporarily busy right now. Please wait a moment and try sending your message again.")
+        else:
+            st.error(f"Error communicating with Gemini: {e}")
